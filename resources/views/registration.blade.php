@@ -35,9 +35,9 @@
                                 <!--<div>
                                     <input type="hidden" name="ip" value="{{ request()->ip() }}" />
                                 </div>-->
-                                <div>
+                                <div class="bttn-link">
                                     <input type="submit" value="Зарегистрироваться" />
-                                    <a href="/authorization">Есть аккаунт?</a>
+                                    <a id="link" href="/authorization">Есть аккаунт?</a>
                                 </div>
                             </form>
                         </section>

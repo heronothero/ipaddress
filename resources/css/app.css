@@ -171,13 +171,22 @@ form:after {
     background: -ms-linear-gradient(top,  #2c54e5b3 0%,#4f6ee0b3 100%);
     background: linear-gradient(top,  #2c54e5b3 0%,#4f6ee0b3 100%);
 }
-#content form div a {
+#links {
     color: #004a80;
     float: right;
     font-size: 14px;
     margin-bottom: 5px;
     margin-right: 20px;
     margin-top: 12px;
+    text-decoration: underline;
+}
+#link {
+    color: #004a80;
+    float: right;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-right: 20px;
+    margin-top: 30px;
     text-decoration: underline;
 }
 .button {
