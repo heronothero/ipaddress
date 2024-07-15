@@ -1,0 +1,33 @@
+body {
+    background: #DCDDDF url(https://cssdeck.com/uploads/media/items/7/7AF2Qzt.png);
+    color: #000;
+    font: 18px;
+    position: relative;
+}
+h1{
+    font-size:28px;
+    color:#563D64;
+}
+.main-container{
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+form{
+    width: 25%;
+    padding: 2em 0 2em 0;
+    margin: 0 auto;
+    border: 1px solid black;
+    border-radius: 5px;
+    justify-content: center;
+    align-content: center;
+    position: relative;
+    text-align: center;
+}
+.links{
+    margin-top: 3em;
+    font-size: 18px;
+}
+#link{
+    padding: 0 20px;
+}

@@ -1,4 +1,4 @@
-@vite(['resources/css/app.css'])
+@vite(['resources/css/main.css'])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
