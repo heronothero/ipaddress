@@ -5,9 +5,13 @@ namespace App\Services\IPInfo;
 
 class IPInfoDTO
 {
-    /**
-     * Create a new class instance.
-     */
+    public string $ip;
+    public string $type;
+    public ?string $country;
+    public ?string $countryCode;
+    public ?string $city;
+    public array $data;
+
     public function __construct()
     {
         //
