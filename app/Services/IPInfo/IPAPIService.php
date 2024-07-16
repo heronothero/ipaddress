@@ -33,6 +33,13 @@ class IPAPIService implements IPInfoContract
             $this->rateLimit->incrementRequestCount();
             $response = file_get_contents("http://ip-api.com/json/{$ip}");
             $data = json_decode($response, true);
+            $data = array_merge([
+                'query' => $ip,
+                'isp' => 'Unknown ISP',
+                'country' => null,
+                'countryCode' => null,
+                'city' => null
+            ], $data);
             $ipInfo = new IPInfoDTO(
                 $data['query'],
                 $data['isp'],
