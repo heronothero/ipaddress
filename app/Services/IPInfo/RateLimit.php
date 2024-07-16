@@ -9,7 +9,8 @@ class RateLimit implements RateLimitContract
 {
     public function __construct(protected int $limit = 40, protected int $ttl = 60)
     {
-
+        $this->limit = $limit;
+        $this->ttl = $ttl;
     }
     public const KEY = 'rate_limit';
     public function get(): int
@@ -20,7 +21,7 @@ class RateLimit implements RateLimitContract
     {
         return $this -> get() < $this -> limit;
     }
-    protected function incrementRequestCount(): int
+    public function incrementRequestCount(): int
     {
         $value = $this -> get();
         Cache::put(static::KEY, ++$value, $this -> ttl);
