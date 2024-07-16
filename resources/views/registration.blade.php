@@ -18,7 +18,8 @@
                 </header>
                     <div class="container">
                         <section id="content">
-                            <form>
+                            <form action="{{ route('register') }}" method="POST">
+                                @csrf
                                 <h1>Регистрация</h1>
                                 <div>
                                     <input type="text" placeholder="Имя" required="" id="name" name="name"/>
@@ -32,12 +33,9 @@
                                 <div>
                                     <input type="password" placeholder="Подтвердите пароль" required="" id="confirm_password" name="password_confirmation"/>
                                 </div>
-                                <!--<div>
-                                    <input type="hidden" name="ip" value="{{ request()->ip() }}" />
-                                </div>-->
                                 <div class="bttn-link">
                                     <input type="submit" value="Зарегистрироваться" />
-                                    <a id="link" href="/authorization">Есть аккаунт?</a>
+                                    <a id="link" href="{{ route('login') }}">Есть аккаунт?</a>
                                 </div>
                             </form>
                         </section>
