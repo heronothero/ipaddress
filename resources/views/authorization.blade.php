@@ -20,7 +20,15 @@
                 </header>
                 <div class="container">
                     <section id="content">
-                            <form>
+                        @if (Auth::check())
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <h1>Добро пожаловать, {{ Auth::user()->name }}</h1>
+                                <input type="submit" value="Выход"/>
+                            </form>
+                        @else
+                            <form action="{{ route('login') }}" method="POST">
+                                @csrf
                                 <h1>Авторизация</h1>
                                 <div>
                                     <input type="text" placeholder="Email" required="" id="username" name="email" />
@@ -31,9 +39,10 @@
                                 <div>
                                     <input type="submit" value="Войти" />
                                     <a id="links" href="#">Забыли пароль?</a>
-                                    <a id="links" href="/registration">Зарегистрироваться</a>
+                                    <a id="links" href="{{ route('register') }}">Зарегистрироваться</a>
                                 </div>
                             </form>
+                        @endif
                     </section>
                 </div>
             </div>
