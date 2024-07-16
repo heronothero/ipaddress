@@ -40,13 +40,33 @@ class IPAPIService implements IPInfoContract
                 'countryCode' => null,
                 'city' => null
             ], $data);
+            $ipInfoData = [
+                'continent' => $data['continent'] ?? null,
+                'continentCode' => $data['continentCode'] ?? null,
+                'region' => $data['region'] ?? null,
+                'regionName' => $data['regionName'] ?? null,
+                'district' => $data['district'] ?? null,
+                'zip' => $data['zip'] ?? null,
+                'lat' => $data['lat'] ?? null,
+                'lon' => $data['lon'] ?? null,
+                'timezone' => $data['timezone'] ?? null,
+                'offset' => $data['offset'] ?? null,
+                'currency' => $data['currency'] ?? null,
+                'org' => $data['org'] ?? null,
+                'as' => $data['as'] ?? null,
+                'asname' => $data['asname'] ?? null,
+                'reverse' => $data['reverse'] ?? null,
+                'mobile' => $data['mobile'] ?? null,
+                'proxy' => $data['proxy'] ?? null,
+                'hosting' => $data['hosting'] ?? null,
+            ];
             $ipInfo = new IPInfoDTO(
                 $data['query'],
                 $data['isp'],
                 $data['country'],
                 $data['countryCode'],
                 $data['city'],
-                $data
+                $ipInfoData
             );
             $this->saveIPInfo($ipInfo);
             return $ipInfo;
