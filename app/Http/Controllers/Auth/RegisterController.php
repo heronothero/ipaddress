@@ -16,7 +16,7 @@ class RegisterController extends Controller
         $this->IPAPIService = $IPAPIService;
     }
     public function showRegistrationForm(){
-        return view('auth.register');
+        return view('registration');
     }
     public function register(Request $request){
         $validatedData = $request->validate([
