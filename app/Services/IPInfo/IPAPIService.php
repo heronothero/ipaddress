@@ -14,20 +14,51 @@ class IPAPIService implements IPInfoContract
     public function getIPInfo(string $ip): ?IPInfoDTO
     {
         if ($this->isIP($ip)) {
-            return IPAddress::where('ip', $ip)->first();
+            $ipAddress = IPAddress::where('ip', $ip)->first();
+            if ($ipAddress)
+            {
+                return new IPInfoDTO(
+                    $ipAddress->ip,
+                    $ipAddress->type,
+                    $ipAddress->country,
+                    $ipAddress->countryCode,
+                    $ipAddress->city,
+                    $ipAddress->data
+                );
+            }
+            if (!$this->rateLimit->canMakeRequest())
+            {
+                return null;
+            }
+            $this->rateLimit->incrementRequestCount();
+            $response = file_get_contents("http://ip-api.com/json/{$ip}");
+            $data = json_decode($response, true);
+            $ipInfo = new IPInfoDTO(
+                $data['query'],
+                $data['isp'],
+                $data['country'],
+                $data['countryCode'],
+                $data['city'],
+                $data
+            );
+            $this->saveIPInfo($ipInfo);
+            return $ipInfo;
         }
-        if (!$this->rateLimit->canMakeRequest()) {
-            return null;
-        }
-        $this->rateLimit->incrementRequestCount();
         return null;
     }
     public function isIP (string $ip): bool
     {
         return filter_var($ip, FILTER_VALIDATE_IP) !== false;
     }
-    protected function saveIPInfo(array $data): void
+    protected function saveIPInfo(IPInfoDTO $data): void
     {
-        IPAddress::create($data);
+        IPAddress::create([
+            'ip' => $data -> ip,
+            'type' => $data -> type,
+            'country' => $data -> country,
+            'countryCode' => $data -> countryCode,
+            'city' => $data -> city,
+            'data' => $data -> data,
+        ]);
     }
 }
