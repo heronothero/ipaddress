@@ -11,17 +11,20 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('authorization');
+        return view('auth.login');
     }
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
         return back()->withErrors([
-            'email' => 'Неверный email или пароль.',
+            'email' => 'Неправильные учетные данные.',
         ]);
     }
 }
