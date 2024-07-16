@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 class UserRegistrationTest extends TestCase
 {
+    use RefreshDatabase;
     public function testUserRegistrationWithSpecificIP()
 {
     $ipAddress = '24.48.0.1';
