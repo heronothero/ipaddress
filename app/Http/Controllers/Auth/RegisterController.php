@@ -16,7 +16,7 @@ class RegisterController extends Controller
         $this->IPAPIService = $IPAPIService;
     }
     public function showRegistrationForm(){
-        return view('registration');
+        return view('auth.register');
     }
     public function register(Request $request){
         $validatedData = $request->validate([
@@ -31,6 +31,6 @@ class RegisterController extends Controller
             'ip' => $request->ip(),
         ]);
         $ipDetails = $this->IPAPIService->getIPInfo($request->ip());
-        return redirect('/')->with('success', 'Registration successful!');
+        return redirect('/')->with('success', 'Регистрация прошла успешно!');
     }
 }
