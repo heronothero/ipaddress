@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class RateLimit implements RateLimitContract
 {
-    public function __construct(protected int $limit = 40)
+    public function __construct(protected int $limit = 40, protected int $ttl = 60)
     {
 
     }
@@ -23,7 +23,7 @@ class RateLimit implements RateLimitContract
     protected function incrementRequestCount(): int
     {
         $value = $this -> get();
-        Cache::put(static::KEY, ++$value);
+        Cache::put(static::KEY, ++$value, $this -> ttl);
         return $value;
     }
 }

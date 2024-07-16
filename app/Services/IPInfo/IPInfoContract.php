@@ -6,4 +6,5 @@ namespace App\Services\IPInfo;
 interface IPInfoContract
 {
     public function getIPInfo(string $ip): ?IPInfoDTO;
+    public function isIP (string $ip): bool;
 }

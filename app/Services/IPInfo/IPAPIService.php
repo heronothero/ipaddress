@@ -9,11 +9,13 @@ class IPAPIService implements IPInfoContract
     {
         return null;
     }
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function __construct(protected RateLimitContract $rateLimit)
     {
-        //
+        //$this -> rateLimit -> get();
+        return null;
+    }
+    public function isIP (string $ip): bool
+    {
+        return true;
     }
 }
