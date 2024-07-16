@@ -12,8 +12,20 @@ class IPInfoDTO
     public ?string $city;
     public array $data;
 
-    public function __construct()
+    public function __construct(
+        string $ip,
+        string $type,
+        ?string $country = null,
+        ?string $countryCode = null,
+        ?string $city = null,
+        array $data = []
+    )
     {
-        //
+        $this -> ip = $ip;
+        $this -> type = $type;
+        $this -> country = $country;
+        $this -> countryCode = $countryCode;
+        $this -> city = $city;
+        $this -> data=$data;
     }
 }
