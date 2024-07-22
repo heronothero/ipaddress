@@ -4,35 +4,50 @@ declare(strict_types=1);
 namespace App\Services\IPInfo;
 
 use App\Models\IPAddress;
+use GuzzleHttp\Client;
+use App\Exceptions\RateLimitExceededExeption;
+use App\Exceptions\IPAPIRequestException;
+use Exception;
+use App\Jobs\FetchIPInfo;
 
 class IPAPIService implements IPInfoContract
 {
-    public function __construct(protected RateLimitContract $rateLimit)
-    {
-        $this->rateLimit = $rateLimit;
-    }
+    protected Client $client;
+    public function __construct(
+        protected RateLimitContract $rateLimit,
+        Client $client = null
+        ){
+            $this->client = $client ?? new Client();
+        }
     public function getIPInfo(string $ip): ?IPInfoDTO
     {
-        if ($this->isIP($ip)) {
-            $ipAddress = IPAddress::where('ip', $ip)->first();
-            if ($ipAddress)
-            {
-                return new IPInfoDTO(
-                    $ipAddress->ip,
-                    $ipAddress->type,
-                    $ipAddress->country,
-                    $ipAddress->countryCode,
-                    $ipAddress->city,
-                    $ipAddress->data
-                );
-            }
+        if (!$this->isIP($ip)) {
+            return null;
+        }
+        $ipAddress = IPAddress::where('ip', $ip)->first();
+        if ($ipAddress)
+        {
+            return new IPInfoDTO(
+                $ipAddress->ip,
+                $ipAddress->type,
+                $ipAddress->country,
+                $ipAddress->countryCode,
+                $ipAddress->city,
+                $ipAddress->data
+            );
+        }
             if (!$this->rateLimit->canMakeRequest())
             {
-                return null;
+                throw new RateLimitExceededExeption();
             }
             $this->rateLimit->incrementRequestCount();
-            $response = file_get_contents("http://ip-api.com/json/{$ip}");
-            $data = json_decode($response, true);
+            FetchIPInfo::dispatch($ip);
+            try {
+                $response = $this->client->get("http://ip-api.com/json/{$ip}");
+                $data = json_decode($response->getBody()->getContents(), true);
+            } catch (Exception $e) {
+                throw new IPAPIRequestException('Ошибка извлечения IP информации', 0, $e);
+            }
             $data = array_merge([
                 'query' => $ip,
                 'isp' => 'Unknown ISP',
@@ -70,8 +85,6 @@ class IPAPIService implements IPInfoContract
             );
             $this->saveIPInfo($ipInfo);
             return $ipInfo;
-        }
-        return null;
     }
     public function isIP (string $ip): bool
     {
