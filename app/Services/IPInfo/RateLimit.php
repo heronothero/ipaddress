@@ -7,24 +7,28 @@ use Illuminate\Support\Facades\Cache;
 
 class RateLimit implements RateLimitContract
 {
-    public function __construct(protected int $limit = 40, protected int $ttl = 60)
-    {
-        $this->limit = $limit;
-        $this->ttl = $ttl;
-    }
-    public const KEY = 'rate_limit';
+    //Ключ для хранекния ограничения запросов в кеше
+    public const CACHE_KEY = 'rate_limit';
+    //Инициализация лимита кол-ва запросов и времени жизни записи в кеше
+    public function __construct(
+        protected int $limit = 40,
+        protected int $ttl = 60
+        ) {}
+    //Получение текущего кол-ва запросов из кеша
     public function get(): int
     {
-        return (int)Cache::get(static::KEY, 0);
+        return (int) Cache::get(static::CACHE_KEY, 0);
     }
+    //Провекра возможности выполнения нового запроса
     public function canMakeRequest(): bool
     {
-        return $this -> get() < $this -> limit;
+        return $this->get() < $this->limit;
     }
+    //Счетчик увеличения запросов и обновление значения в кеше
     public function incrementRequestCount(): int
     {
-        $value = $this -> get();
-        Cache::put(static::KEY, ++$value, $this -> ttl);
+        $value = $this->get();
+        Cache::put(static::CACHE_KEY, ++$value, $this->ttl);
         return $value;
     }
 }
