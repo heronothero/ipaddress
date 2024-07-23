@@ -10,6 +10,10 @@ use App\Services\IPInfo\RateLimit;
 
 class IPProvider extends ServiceProvider
 {
+    /**
+     * Register function
+     * @return void
+     */
     public function register(): void
     {
         $this->app->singleton(IPInfoContract::class, function () {
