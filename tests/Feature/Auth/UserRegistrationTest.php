@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -9,6 +9,9 @@ use Tests\TestCase;
 class UserRegistrationTest extends TestCase
 {
     use RefreshDatabase;
+    /**
+     * Test that user can register with specific IP
+     */
     public function testUserRegistrationWithSpecificIP()
 {
     $ipAddress = '24.48.0.1';
@@ -26,6 +29,10 @@ class UserRegistrationTest extends TestCase
         'ip' => $ipAddress,
     ]);
     }
+
+    /**
+     * Test that user can register
+     */
     public function testUserRegistration()
 {
     $response = $this->post('/registration', [
