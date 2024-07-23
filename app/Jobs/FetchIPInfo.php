@@ -15,9 +15,15 @@ class FetchIPInfo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected string $ip;
     /**
-     * Create a new job instance.
+     * IP address to fetch ingfo for
+     * @var string $ip
+     */
+    protected string $ip;
+
+    /**
+     * Create a new job instance
+     * @param string $ip
      */
     public function __construct(string $ip)
     {
@@ -25,7 +31,9 @@ class FetchIPInfo implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * Summary of handle
+     * @param IPAPIService $IPAPIService
+     * @return void
      */
     public function handle(IPAPIService $IPAPIService)
     {

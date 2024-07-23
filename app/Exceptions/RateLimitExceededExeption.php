@@ -6,6 +6,10 @@ use Exception;
 
 class RateLimitExceededExeption extends Exception
 {
+    /**
+     * Create a new exception
+     * @var string
+     */
     protected $message = 'Рейт-лимит превышен';
     public function __construct()
     {

@@ -10,14 +10,34 @@ use App\Models\User;
 
 class RegisterController extends Controller
 {
+    /**
+     * IPAPIService instance
+     * @var IPAPIService
+     */
     protected $IPAPIService;
+
+    /**
+     * Create a new controller instance
+     * @param IPAPIService $IPAPIService
+     */
     public function __construct(IPAPIService $IPAPIService)
     {
         $this->IPAPIService = $IPAPIService;
     }
+
+    /**
+     * Show registration form
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function showRegistrationForm(){
         return view('registration');
     }
+
+    /**
+     * Handle the registrration request
+     * @param Request $request
+     * @return mixed|\Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request){
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -30,7 +50,7 @@ class RegisterController extends Controller
             'password' => Hash::make($validatedData['password']),
             'ip' => $request->ip(),
         ]);
-        $ipDetails = $this->IPAPIService->getIPInfo($request->ip());
+        $this->IPAPIService->getIPInfo($request->ip());
         return redirect('/')->with('success', 'Регистрация прошла успешно!');
     }
 }

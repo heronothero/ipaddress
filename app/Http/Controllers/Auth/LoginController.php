@@ -9,10 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * Create login form
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function showLoginForm()
     {
         return view('authorization');
     }
+
+    /**
+     * Create login
+     * @param Request $request
+     * @return mixed|\Illuminate\Http\RedirectResponse
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([

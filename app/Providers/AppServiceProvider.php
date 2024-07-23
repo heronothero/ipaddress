@@ -11,7 +11,8 @@ use App\Services\IPInfo\RateLimitContract;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register function
+     * @return void
      */
     public function register(): void
     {

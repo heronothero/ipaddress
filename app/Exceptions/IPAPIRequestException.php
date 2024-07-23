@@ -6,6 +6,12 @@ use Exception;
 
 class IPAPIRequestException extends Exception
 {
+    /**
+     * Create a new exception instance
+     * @param string $message
+     * @param int $code
+     * @param Exception|null $previous
+     */
     public function __construct(
         string $message = 'Ошибка выполнения запроса IP API', int $code = 0, Exception $previous = null
     ){
