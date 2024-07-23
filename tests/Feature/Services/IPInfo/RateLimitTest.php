@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Services\IPInfo;
 
 use Tests\TestCase;
 use App\Services\IPInfo\RateLimitContract;
@@ -25,13 +25,13 @@ class RateLimitTest extends TestCase
     public function test_cannot_make_request_after_limit_exceeded()
     {
         $rateLimiter = new RateLimit();
-        Cache::put(RateLimit::KEY, 50);
+        Cache::put(RateLimit::CACHE_KEY, 50);
         $this->assertFalse($rateLimiter->canMakeRequest());
     }
     public function test_request_count_resets_after_decay_period()
     {
         $rateLimiter = new RateLimit();
-        Cache::put(RateLimit::KEY, 40, 1);
+        Cache::put(RateLimit::CACHE_KEY, 40, 1);
         $this->assertFalse($rateLimiter->canMakeRequest());
         sleep(61);
         $this->assertTrue($rateLimiter->canMakeRequest());
