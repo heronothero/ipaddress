@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Hash;
 class UserAuthorizationTest extends TestCase
 {
     use RefreshDatabase;
-    /** @test */
+    /**
+     * Test that user can login
+     */
     public function user_can_login_with_correct_credentials()
     {
         $user = User::factory()->create([
@@ -25,7 +27,9 @@ class UserAuthorizationTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    /** @test */
+    /**
+     * Test that user cant login with incorrect credentials
+     */
     public function user_cannot_login_with_incorrect_credentials()
     {
         $user = User::factory()->create([
