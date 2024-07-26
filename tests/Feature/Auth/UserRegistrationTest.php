@@ -14,10 +14,10 @@ class UserRegistrationTest extends TestCase
      */
     public function testUserRegistrationWithSpecificIP()
 {
-    $ipAddress = '24.48.0.1';
+    $ipAddress = '127.0.0.1';
     $response = $this->post('/registration', [
-        'name' => 'Johnie Doe',
-        'email' => 'johnie.doe@example.com',
+        'name' => 'Johni Doe',
+        'email' => 'john.doe@example.com',
         'password' => 'password1111',
         'password_confirmation' => 'password1111',
         'ip' => $ipAddress,

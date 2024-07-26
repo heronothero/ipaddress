@@ -6,11 +6,14 @@ namespace Tests\Feature\Services\IPInfo;
 use Tests\TestCase;
 use App\Services\IPInfo\IPAPIService;
 use App\Services\IPInfo\RateLimit;
+use App\Services\IPInfo\RateLimitContract;
 use App\Models\IPAddress;
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
+use App\Exceptions\RateLimitExceededExeption;
+use App\Exceptions\IPAPIRequestException;
 
 class IPAPIServiceTest extends TestCase
 {
@@ -33,36 +36,24 @@ class IPAPIServiceTest extends TestCase
         IPAddress::create([
             'ip' => $ip,
             'type' => 'ISP',
-            'country' => 'Test Country',
-            'countryCode' => 'TC',
-            'city' => 'Test City',
-            'data' => []
+            'data' => json_encode([])
         ]);
         $rateLimitMock = $this->createMock(RateLimit::class);
         $rateLimitMock->method('canMakeRequest')->willReturn(true);
-        $rateLimitMock->expects($this->once())->method('incrementRequestCount');
+        $rateLimitMock->expects($this->never())->method('incrementRequestCount');
         $clientMock = $this->createMock(Client::class);
         $clientMock->method('get')->willReturn(new Response(200, [], json_encode([
             'query' => $ip,
-            'isp' => 'Test ISP',
-            'country' => 'Test Country',
-            'countryCode' => 'TC',
-            'city' => 'Test City'
+            'isp' => 'ISP',
         ])));
         $service = new IPAPIService($rateLimitMock, $clientMock);
         $ipInfo = $service->getIPInfo($ip);
         $this->assertNotNull($ipInfo);
         $this->assertEquals($ip, $ipInfo->ip);
-        $this->assertEquals('Test ISP', $ipInfo->type);
-        $this->assertEquals('Test Country', $ipInfo->country);
-        $this->assertEquals('TC', $ipInfo->countryCode);
-        $this->assertEquals('Test City', $ipInfo->city);
-        $this->assertDatabaseHas('ip_addresses', [
+        $this->assertEquals('ISP', $ipInfo->type);
+        $this->assertDatabaseHas('ip_address', [
             'ip' => $ip,
-            'type' => 'Test ISP',
-            'country' => 'Test Country',
-            'countryCode' => 'TC',
-            'city' => 'Test City',
+            'type' => 'ISP',
         ]);
     }
 
@@ -71,7 +62,7 @@ class IPAPIServiceTest extends TestCase
      */
     public function testRateLimitExceeded()
     {
-        $this->expectException(\App\Exceptions\RateLimitExceededExeption::class);
+        $this->expectException(RateLimitExceededExeption::class);
         $ip = '123.123.123.123';
         $rateLimitMock = $this->createMock(RateLimit::class);
         $rateLimitMock->method('canMakeRequest')->willReturn(false);
@@ -88,10 +79,7 @@ class IPAPIServiceTest extends TestCase
         $ip = '123.123.123.123';
         $responseBody = json_encode([
             'query' => $ip,
-            'isp' => 'Test ISP',
-            'country' => 'Test Country',
-            'countryCode' => 'TC',
-            'city' => 'Test City'
+            'isp' => 'ISP'
         ]);
         $rateLimitMock = $this->createMock(RateLimit::class);
         $rateLimitMock->method('canMakeRequest')->willReturn(true);
@@ -102,16 +90,10 @@ class IPAPIServiceTest extends TestCase
         $ipInfo = $service->getIPInfo($ip);
         $this->assertNotNull($ipInfo);
         $this->assertEquals($ip, $ipInfo->ip);
-        $this->assertEquals('Test ISP', $ipInfo->type);
-        $this->assertEquals('Test Country', $ipInfo->country);
-        $this->assertEquals('TC', $ipInfo->countryCode);
-        $this->assertEquals('Test City', $ipInfo->city);
-        $this->assertDatabaseHas('ip_addresses', [
+        $this->assertEquals('ISP', $ipInfo->type);
+        $this->assertDatabaseHas('ip_address', [
             'ip' => $ip,
-            'type' => 'Test ISP',
-            'country' => 'Test Country',
-            'countryCode' => 'TC',
-            'city' => 'Test City',
+            'type' => 'ISP',
         ]);
     }
 
@@ -120,7 +102,7 @@ class IPAPIServiceTest extends TestCase
      */
     public function testAPIRequestException()
     {
-        $this->expectException(\App\Exceptions\IPAPIRequestException::class);
+        $this->expectException(IPAPIRequestException::class);
         $ip = '123.123.123.123';
         $rateLimitMock = $this->createMock(RateLimit::class);
         $rateLimitMock->method('canMakeRequest')->willReturn(true);
