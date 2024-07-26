@@ -46,7 +46,7 @@ class RateLimitTest extends TestCase
     public function test_request_count_resets_after_decay_period(): void
     {
         $rateLimiter = new RateLimit();
-        Cache::put(RateLimit::CACHE_KEY, 40, 1);
+        Cache::put(RateLimit::CACHE_KEY, 2, 2);
         $this->assertFalse($rateLimiter->canMakeRequest());
         sleep(61);
         $this->assertTrue($rateLimiter->canMakeRequest());
