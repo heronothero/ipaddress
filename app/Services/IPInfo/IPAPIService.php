@@ -63,8 +63,11 @@ class IPAPIService implements IPInfoContract
             throw new RateLimitExceededExeption();
         }
         $this->rateLimit->incrementRequestCount();
-        FetchIPInfo::dispatch($ip);
-        $data = $this->fetchIPData($ip);
+        try {
+            $data = $this->fetchIPData($ip);
+        } catch (Exception $e) {
+            throw new IPAPIRequestException('Ошибка извлечения IP информации', 0, $e);
+        }
         $ipInfo = $this->createIPInfoDTOFromData($data);
         $this->saveIPInfo($ipInfo);
         return $ipInfo;
@@ -93,7 +96,7 @@ class IPAPIService implements IPInfoContract
             'country' => $data -> country,
             'countryCode' => $data -> countryCode,
             'city' => $data -> city,
-            'data' => $data -> data,
+            'data' => json_encode($data->data),
         ]);
     }
 
@@ -104,13 +107,14 @@ class IPAPIService implements IPInfoContract
      */
     protected function createIPInfoDTOFromModel (IPAddress $ipAddress): IPInfoDTO
     {
+        $data = json_decode($ipAddress->data, true);
         return new IPInfoDTO(
             $ipAddress->ip,
             $ipAddress->type,
             $ipAddress->country,
             $ipAddress->countryCode,
             $ipAddress->city,
-            $ipAddress->data
+            $data
         );
     }
 
@@ -166,11 +170,11 @@ class IPAPIService implements IPInfoContract
         ];
         return new IPInfoDTO(
             $data['query'],
-                $data['isp'],
-                $data['country'],
-                $data['countryCode'],
-                $data['city'],
-                $ipInfoData
+            $data['isp'],
+            $data['country'],
+            $data['countryCode'],
+            $data['city'],
+            $ipInfoData
         );
     }
 }
