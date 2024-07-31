@@ -20,14 +20,16 @@ class RateLimitTest extends TestCase
     }
 
     /**
-     * Test that requests can be made within the limit
+     * Test that requests can be made within the limit (limit was changed to 2 requests per 2 sec)
      */
     public function test_can_make_request_within_limit(): void
     {
-        $rateLimiter = new RateLimit();
+        $rateLimiter = new RateLimit(2, 2);
         $this->assertTrue($rateLimiter->canMakeRequest());
         $rateLimiter->incrementRequestCount();
         $this->assertTrue($rateLimiter->canMakeRequest());
+        $rateLimiter->incrementRequestCount();
+        $this->assertFalse($rateLimiter->canMakeRequest());
     }
 
     /**
@@ -35,8 +37,8 @@ class RateLimitTest extends TestCase
      */
     public function test_cannot_make_request_after_limit_exceeded(): void
     {
-        $rateLimiter = new RateLimit();
-        Cache::put(RateLimit::CACHE_KEY, 50);
+        $rateLimiter = new RateLimit(2, 2);
+        Cache::put(RateLimit::CACHE_KEY, 2, 2);
         $this->assertFalse($rateLimiter->canMakeRequest());
     }
 
@@ -45,10 +47,10 @@ class RateLimitTest extends TestCase
      */
     public function test_request_count_resets_after_decay_period(): void
     {
-        $rateLimiter = new RateLimit();
-        Cache::put(RateLimit::CACHE_KEY, 45, 60);
+        $rateLimiter = new RateLimit(2, 2);
+        Cache::put(RateLimit::CACHE_KEY, 2, 2);
         $this->assertFalse($rateLimiter->canMakeRequest());
-        sleep(61);
+        sleep(3);
         $this->assertTrue($rateLimiter->canMakeRequest());
     }
 }
